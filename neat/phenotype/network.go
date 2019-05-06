@@ -43,11 +43,11 @@ func (net *Network) addNodes(ids ...int){
 
 func (net *Network) addAllNodes(inIDs []int, outIDs []int, hiddenIDs []int){
 	net.addNodes(inIDs...)
-	net.inputs = net.nodes[:]
-	net.addNodes(outIDs...)
-	net.outputs = net.nodes[len(net.inputs):]
 	net.addNodes(hiddenIDs...)
-	net.hidden = net.nodes[len(net.inputs) + len(net.outputs):]
+	net.addNodes(outIDs...)
+	net.inputs = net.nodes[:len(inIDs)]
+	net.hidden = net.nodes[len(inIDs):len(inIDs) + len(hiddenIDs)]
+	net.outputs = net.nodes[len(inIDs) + len(hiddenIDs):]
 }
 
 func (net *Network) addLink(in int, out int, weight float32){
