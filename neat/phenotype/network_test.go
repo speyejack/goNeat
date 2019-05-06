@@ -99,3 +99,34 @@ func TestBuildNetwork(t *testing.T){
 
 
 }
+
+func TestNetworkPropagation(t *testing.T){
+	ins := []int{1}
+	hiddens := []int{2}
+	outs := []int{10}
+
+	links := []Link{
+		{1,2,1.0},
+		{2,10,1.0}}
+
+	net := BuildNetwork(ins, outs, hiddens, links)
+
+	input := []float32{1.0}
+	output := net.update(input)
+	expected := float32(0.5)
+	if output[0] <= expected {
+		t.Errorf("Got %v expected greater than %v", output[0], expected)
+	}
+	old_output := output[0]
+
+	input = []float32{0}
+	output = net.update(input)
+	expected = float32(0.5)
+	if output[0] <= expected {
+		t.Errorf("Got %v expected greater than %v", output[0], expected)
+	}
+
+	if output[0] >= old_output {
+		t.Errorf("Got %v expected less than %v", output[0], old_output)
+	}
+}

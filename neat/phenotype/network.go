@@ -115,6 +115,33 @@ func (net *Network) build(inIDs []int, outIDs []int, hiddenIDs []int, links []Li
 	net.sortNodes()
 }
 
+func (net *Network) setInputs(inputs []float32){
+	for i,value := range inputs {
+		net.inputs[i].value = value;
+	}
+}
+
+func (net *Network) getOutputs() (outputs []float32){
+	outputs = make([]float32, 0, len(net.outputs))
+	for _,node := range net.outputs {
+		outputs = append(outputs,node.value)
+	}
+	return
+}
+
+func (net *Network) propagate(){
+	nodes := net.nodes[len(net.inputs):]
+	for i,_ := range nodes{
+		nodes[i].update()
+	}
+}
+
+func (net *Network) update(inputs []float32) []float32{
+	net.setInputs(inputs)
+	net.propagate()
+	return net.getOutputs()
+}
+
 func BuildNetwork(inIDs []int, outIDs []int, hiddenIDs []int, links []Link) (net *Network){
 	net = &Network{}
 	net.build(inIDs, outIDs, hiddenIDs, links)
