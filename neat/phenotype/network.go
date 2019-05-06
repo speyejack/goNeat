@@ -35,9 +35,9 @@ func (net *Network) addNodes(ids ...int){
 		net.nodeMap = make(map[int]*Node)
 	}
 
-	for i,node := range new_nodes{
-		node.id = ids[i]
-		net.nodeMap[node.id] = &node;
+	for i,_ := range new_nodes{
+		new_nodes[i].id = ids[i]
+		net.nodeMap[ids[i]] = &new_nodes[i]
 	}
 }
 
@@ -53,11 +53,11 @@ func (net *Network) addAllNodes(inIDs []int, outIDs []int, hiddenIDs []int){
 	net.outputs = net.nodes[len(inIDs) + len(hiddenIDs):]
 }
 
-func (net *Network) addLink(in int, out int, weight float32){
-	link := Link{in, out, weight}
+func (net *Network) addLink(link Link){
+	in, out := link.in, link.out
 
-	net.nodeMap[in].inLinks = append(net.nodeMap[in].inLinks, link)
-	net.nodeMap[out].outLinks = append(net.nodeMap[out].outLinks, link)
+	net.nodeMap[in].outLinks = append(net.nodeMap[in].outLinks, link)
+	net.nodeMap[out].inLinks = append(net.nodeMap[out].inLinks, link)
 }
 
 func (net *Network) sortNodes(){
@@ -100,5 +100,22 @@ func (net *Network) sortNodes(){
 	}
 	sorter := nodeSorter{net.nodes, old_ranks}
 	sort.Sort(&sorter)
+
 }
 
+func (net *Network) build(inIDs []int, outIDs []int, hiddenIDs []int, links []Link) {
+
+	net.addAllNodes(inIDs, outIDs, hiddenIDs)
+
+	for _,link := range links{
+		net.addLink(link)
+	}
+
+	net.sortNodes()
+}
+
+func BuildNetwork(inIDs []int, outIDs []int, hiddenIDs []int, links []Link) (net *Network){
+	net = &Network{}
+	net.build(inIDs, outIDs, hiddenIDs, links)
+	return
+}
