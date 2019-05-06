@@ -55,9 +55,10 @@ func (net *Network) addAllNodes(inIDs []int, outIDs []int, hiddenIDs []int){
 
 func (net *Network) addLink(link Link){
 	in, out := link.in, link.out
+	nodeLink := NodeLink{net.nodeMap[in], net.nodeMap[out], link.weight}
 
-	net.nodeMap[in].outLinks = append(net.nodeMap[in].outLinks, link)
-	net.nodeMap[out].inLinks = append(net.nodeMap[out].inLinks, link)
+	net.nodeMap[in].outLinks = append(net.nodeMap[in].outLinks, nodeLink)
+	net.nodeMap[out].inLinks = append(net.nodeMap[out].inLinks, nodeLink)
 }
 
 func (net *Network) sortNodes(){
@@ -84,13 +85,13 @@ func (net *Network) sortNodes(){
 			id := node.id
 			inRank := float32(0.0)
 			for _,link := range node.inLinks {
-				inRank += old_ranks[link.in]
+				inRank += old_ranks[link.in.id]
 			}
 			inRank /= float32(len(node.inLinks))
 
 			outRank := float32(0.0)
 			for _,link := range node.outLinks {
-				outRank += old_ranks[link.out]
+				outRank += old_ranks[link.out.id]
 			}
 			outRank /= float32(len(node.outLinks))
 
