@@ -42,6 +42,9 @@ func (net *Network) addNodes(ids ...int){
 }
 
 func (net *Network) addAllNodes(inIDs []int, outIDs []int, hiddenIDs []int){
+	net.nodeMap = make(map[int]*Node)
+	net.nodes = make([]Node, 0, len(inIDs) + len(outIDs) + len(hiddenIDs))
+
 	net.addNodes(inIDs...)
 	net.addNodes(hiddenIDs...)
 	net.addNodes(outIDs...)
