@@ -1,6 +1,7 @@
 package phenotype
 
 type Node struct {
-	inputLinks []Link
-	outputLinks []Link
+	id int
+	inLinks []Link
+	outLinks []Link
 }
